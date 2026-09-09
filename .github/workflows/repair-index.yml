@@ -1,0 +1,39 @@
+name: Repair source index and add Apple web metadata
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-index.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore complete source index and add iOS metadata
+        run: |
+          git show 533019290e957267dbb56cb7b7cb1370b15ebbdc:index.html > index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+          s = s.replace('content="width=device-width, initial-scale=1, viewport-fit=cover"', 'content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no"')
+          needle = '<title>BLACKROOT — Nightfall in the Hollow</title>'
+          extra = needle + '''\n<meta name="apple-mobile-web-app-capable" content="yes" />\n<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />\n<meta name="apple-mobile-web-app-title" content="BLACKROOT" />\n<meta name="mobile-web-app-capable" content="yes" />\n<link rel="apple-touch-icon" sizes="180x180" href="assets/icon/icon-180.png" />'''
+          s = s.replace(needle, extra, 1)
+          p.write_text(s)
+          PY
+      - name: Commit repaired index
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html
+          git diff --cached --quiet || git commit -m "Restore full game page with iOS metadata"
+          git push
