@@ -1,0 +1,65 @@
+name: Build macOS game
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'desktop/**'
+      - 'scripts/**'
+      - 'styles/**'
+      - 'assets/icon/**'
+      - 'index.html'
+      - 'build.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'electron-builder.yml'
+      - '.github/workflows/macos-release.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blackroot-macos-release
+  cancel-in-progress: false
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Build web game
+        run: npm run build
+      - name: Build universal Mac app
+        run: npx electron-builder --mac dmg zip --universal --publish never
+      - name: Verify app bundle exists
+        run: |
+          test -d release/mac-universal/BLACKROOT.app || test -d release/mac/BLACKROOT.app
+          ls -lah release
+      - name: Publish macOS downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(node -p "require('./package.json').version")
+          tag="v${version}-macos.${{ github.run_number }}"
+          shasum -a 256 release/*.dmg release/*.zip > release/SHA256SUMS-macOS.txt
+          gh release create "$tag" release/*.dmg release/*.zip release/SHA256SUMS-macOS.txt --target "${{ github.sha }}" --title "BLACKROOT $version for macOS" --notes "Universal macOS build for Apple Silicon and Intel Macs. This build is currently unsigned; on first launch macOS may require Control-click > Open."
+      - name: Keep macOS build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: BLACKROOT-macOS
+          path: |
+            release/*.dmg
+            release/*.zip
+            release/SHA256SUMS-macOS.txt
+          if-no-files-found: ignore
