@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/repair-index.yml'
+      - 'manifest.webmanifest'
   workflow_dispatch:
 
 permissions:
