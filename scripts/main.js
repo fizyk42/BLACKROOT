@@ -8,6 +8,7 @@
 import { GameManager } from './core/GameManager.js';
 import { Settings } from './core/Settings.js';
 import { Audio } from './core/AudioManager.js';
+import { installTouchControls } from './core/TouchControls.js';
 
 function start() {
   const canvas = document.getElementById('gl');
@@ -22,6 +23,10 @@ function start() {
       '\n\nWebGL2 is required. Try a different browser, or enable hardware acceleration.';
     return;
   }
+
+  // Install the mobile control surface only on touch-capable devices. Desktop
+  // mouse, keyboard and controller behaviour remains unchanged.
+  installTouchControls();
 
   // The first user gesture anywhere unlocks the audio context.
   const unlock = () => { Audio.init(); Audio.resume(); };
