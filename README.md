@@ -28,6 +28,19 @@ and the dedicated server behind co-op has no dependencies at all.
 
 ## 1. Running it
 
+### Windows desktop installer
+
+Download the installer from [GitHub Releases](https://github.com/fizyk42/BLACKROOT/releases/latest).
+Run the Setup `.exe`, then launch **BLACKROOT** from the desktop or Start menu.
+The Windows package includes the game and works offline for single-player.
+Press **F11** to toggle fullscreen. Saves stay in your local BLACKROOT application data.
+The installer is unsigned, so Windows may display an unknown publisher notice.
+
+For development, use `npm ci` then `npm run desktop:start`. On Windows,
+`npm run desktop:dist` creates the installer in `release/`. The GitHub **Build
+Windows installer** workflow builds, installs, checks gameplay, and publishes a
+release automatically when game or desktop packaging code changes on `main`.
+
 The committed browser build is **`docs/index.html`**. Download that file and
 open it in a desktop browser, or enable GitHub Pages using [PUBLISH.md](PUBLISH.md).
 
