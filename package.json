@@ -28,13 +28,24 @@
     "roblox:place": "node roblox/tools/buildplace.mjs",
     "roblox:sync": "node roblox/tools/syncserver.mjs",
     "roblox:plugin": "node roblox/tools/installplugin.mjs",
-    "roblox:bot": "node roblox/tools/bot.mjs"
+    "roblox:bot": "node roblox/tools/bot.mjs",
+    "desktop:start": "npm run build && electron .",
+    "desktop:dist": "npm run build && electron-builder --win nsis --x64 --publish never"
   },
   "dependencies": {
     "three": "0.169.0"
   },
   "devDependencies": {
+    "electron": "44.3.0",
+    "electron-builder": "26.15.3",
     "esbuild": "0.24.0",
     "playwright": "^1.49.0"
+  },
+  "main": "desktop/main.cjs",
+  "author": "BLACKROOT",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fizyk42/BLACKROOT.git"
   }
 }

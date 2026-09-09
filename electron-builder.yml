@@ -1,0 +1,30 @@
+appId: com.blackroot.game
+productName: BLACKROOT
+copyright: Copyright © 2026 BLACKROOT
+asar: true
+directories:
+  output: release
+files:
+  - desktop/**
+  - docs/index.html
+  - assets/icon/icon-256.png
+  - package.json
+  - '!node_modules/**'
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: assets/icon/icon-256.png
+  artifactName: BLACKROOT-Setup-${version}-${arch}.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: BLACKROOT
+  uninstallDisplayName: BLACKROOT
+  deleteAppDataOnUninstall: false
+  runAfterFinish: true
+publish: null

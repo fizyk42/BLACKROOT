@@ -30,3 +30,7 @@ assets/music/
 
 # Git bundles — a transport artefact, not source.
 *.bundle
+
+# Windows desktop packages and smoke-test reports
+release/
+desktop-test-report.json

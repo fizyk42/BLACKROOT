@@ -1,0 +1,85 @@
+name: Build Windows installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'desktop/**'
+      - 'scripts/**'
+      - 'styles/**'
+      - 'assets/icon/**'
+      - 'index.html'
+      - 'build.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'electron-builder.yml'
+      - '.github/workflows/windows-release.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blackroot-windows-release
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Build game and Windows installer
+        run: npm run desktop:dist
+      - name: Install and test the actual Windows game
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $setup = (Get-ChildItem release/BLACKROOT-Setup-*-x64.exe | Select-Object -First 1).FullName
+          if (!$setup) { throw 'Installer was not created' }
+          $installDir = Join-Path $env:LOCALAPPDATA 'Programs/BLACKROOT'
+          $installer = Start-Process -FilePath $setup -ArgumentList '/S', "/D=$installDir" -Wait -PassThru
+          if ($installer.ExitCode -ne 0) { throw "Installer failed: $($installer.ExitCode)" }
+          $game = Join-Path $installDir 'BLACKROOT.exe'
+          if (!(Test-Path $game)) { throw 'Installed executable is missing' }
+          $report = Join-Path $env:RUNNER_TEMP 'desktop-test-report.json'
+          $process = Start-Process -FilePath $game -ArgumentList '--smoke-test', "--smoke-report=$report" -PassThru
+          if (!$process.WaitForExit(300000)) { Stop-Process -Id $process.Id -Force; throw 'Desktop test timed out' }
+          if (!(Test-Path $report)) { throw 'Desktop test report is missing' }
+          Get-Content $report
+          Copy-Item $report release/desktop-test-report.json
+          if ($process.ExitCode -ne 0 -or !(Get-Content $report | ConvertFrom-Json).passed) { throw 'Desktop gameplay test failed' }
+          $uninstaller = Join-Path $installDir 'Uninstall BLACKROOT.exe'
+          if (!(Test-Path $uninstaller)) { throw 'Uninstaller is missing' }
+          Start-Process -FilePath $uninstaller -ArgumentList '/S' -Wait
+      - name: Publish verified installer
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          $tag = "v$version-windows.${{ github.run_number }}"
+          $installer = (Get-ChildItem release/BLACKROOT-Setup-*-x64.exe | Select-Object -First 1).FullName
+          $hash = (Get-FileHash $installer -Algorithm SHA256).Hash.ToLower()
+          "$hash  $(Split-Path $installer -Leaf)" | Set-Content release/SHA256SUMS.txt
+          gh release create $tag $installer release/SHA256SUMS.txt release/desktop-test-report.json --target "${{ github.sha }}" --title "BLACKROOT $version for Windows" --notes-file desktop/RELEASE-NOTES.md --latest
+          if ($LASTEXITCODE -ne 0) { throw 'Release publishing failed' }
+      - name: Keep build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: BLACKROOT-Windows
+          path: |
+            release/BLACKROOT-Setup-*-x64.exe
+            release/desktop-test-report.json
+            release/SHA256SUMS.txt
+          if-no-files-found: ignore

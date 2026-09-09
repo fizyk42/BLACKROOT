@@ -9,8 +9,9 @@
 import * as esbuild from 'esbuild';
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = path.dirname(new URL(import.meta.url).pathname);
+const root = path.dirname(fileURLToPath(import.meta.url));
 const minify = !process.argv.includes('--nomin');
 const watch = process.argv.includes('--watch');
 
