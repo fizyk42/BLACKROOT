@@ -2,7 +2,7 @@
   "name": "blackroot",
   "version": "0.9.0",
   "private": true,
-  "description": "BLACKROOT \u2014 Nightfall in the Hollow. A first-person open-world survival horror prototype.",
+  "description": "BLACKROOT — Nightfall in the Hollow. A first-person open-world survival horror prototype.",
   "type": "module",
   "scripts": {
     "start": "node serve.mjs",
@@ -30,7 +30,8 @@
     "roblox:plugin": "node roblox/tools/installplugin.mjs",
     "roblox:bot": "node roblox/tools/bot.mjs",
     "desktop:start": "npm run build && electron .",
-    "desktop:dist": "npm run build && electron-builder --win nsis --x64 --publish never"
+    "desktop:dist": "npm run build && electron-builder --win nsis --x64 --publish never",
+    "desktop:mac": "npm run build && electron-builder --mac dmg zip --universal --publish never"
   },
   "dependencies": {
     "three": "0.169.0"
