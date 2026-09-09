@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>BLACKROOT — Nightfall in the Hollow</title>
+<!-- Icon: assets/icon/. The tab favicon is inlined as a data URI so the
+     single-file build stays self-contained. Larger icons (apple-touch, PWA,
+     desktop packaging) ship as files in assets/icon/ — see the README. -->
+<link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,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" />
+<meta name="theme-color" content="#07080a" />
+<link rel="stylesheet" href="styles/ui.css" />
+</head>
+<body>
+
+<div id="viewport">
+  <canvas id="gl"></canvas>
+  <div id="vignette"></div>
+  <div id="damage-flash"></div>
+  <div id="lowhealth"></div>
+</div>
+
+<!-- ============ CROSSHAIR / HUD ============ -->
+<div id="hud" class="hidden">
+  <div id="crosshair"><i class="ch t"></i><i class="ch b"></i><i class="ch l"></i><i class="ch r"></i><i class="ch dot"></i></div>
+  <div id="hitmarker"></div>
+
+  <div id="hud-left">
+    <div class="bar-row"><span class="bar-label">HP</span><div class="bar hp"><i id="bar-health"></i></div></div>
+    <div class="bar-row"><span class="bar-label">ST</span><div class="bar st"><i id="bar-stamina"></i></div></div>
+    <div class="bar-row"><span class="bar-label">FD</span><div class="bar fd"><i id="bar-hunger"></i></div></div>
+    <div class="bar-row"><span class="bar-label">H2O</span><div class="bar th"><i id="bar-thirst"></i></div></div>
+  </div>
+
+  <div id="hud-right">
+    <div id="weapon-name">UNARMED</div>
+    <div id="ammo-line"><span id="ammo-mag">—</span><span id="ammo-sep">/</span><span id="ammo-res">—</span></div>
+    <div id="fire-mode"></div>
+  </div>
+
+  <div id="quickbar"></div>
+
+  <div id="interact-prompt" class="hidden"><b>E</b><span id="interact-text"></span></div>
+  <div id="compass"><div id="compass-strip"></div><div id="compass-needle"></div></div>
+  <div id="lookedge" class="hidden"><i class="le l"></i><i class="le r"></i><i class="le t"></i><i class="le b"></i></div>
+  <div id="squad" class="hidden"></div>
+  <div id="netchat" class="hidden"></div>
+  <div id="toasts"></div>
+  <div id="subtitles"></div>
+  <div id="objective"><span id="objective-text"></span></div>
+  <div id="waypoint-layer"></div>
+
+  <div id="bossbar" class="hidden">
+    <div class="bb-name"></div>
+    <div class="bb-title"></div>
+    <div class="bb-track"><i class="bb-fill"></i><i class="bb-chip"></i></div>
+    <div class="bb-phase"></div>
+  </div>
+
+  <div id="biome-card" class="hidden">
+    <div class="bc-kicker"></div>
+    <div class="bc-name"></div>
+    <div class="bc-sub"></div>
+    <div class="bc-blurb"></div>
+  </div>
+  <div id="fps-counter" class="hidden"></div>
+</div>
+
+<!-- ============ INVENTORY ============ -->
+<div id="inventory" class="screen hidden">
+  <div class="panel wide">
+    <header><h2>INVENTORY</h2><small>TAB to close &nbsp;·&nbsp; LEFT-CLICK use/equip &nbsp;·&nbsp; RIGHT-CLICK drop &nbsp;·&nbsp; 1–5 assign</small></header>
+    <div class="inv-body">
+      <div class="inv-grid" id="inv-grid"></div>
+      <aside class="inv-detail" id="inv-detail">
+        <div class="inv-detail-empty">Select an item.</div>
+      </aside>
+    </div>
+    <footer><div id="inv-weight">CARRY 0.0 / 35.0 kg</div><div id="inv-hint">Assign to a quick slot with keys 1–5 while an item is selected.</div></footer>
+  </div>
+</div>
+
+<!-- ============ BOOT SEQUENCE ============ -->
+<div id="boot" class="screen">
+  <div id="splash-studio" class="boot-stage">
+    <div class="studio-mark">
+      <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+        <circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".45"/>
+        <path d="M60 24 L74 52 L60 96 L46 52 Z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M46 52 L74 52" stroke="currentColor" stroke-width="1.2" opacity=".7"/>
+        <circle cx="60" cy="52" r="5.5" fill="currentColor" opacity=".85"/>
+      </svg>
+      <div class="studio-name">NINEFOLD&nbsp;LANTERN</div>
+      <div class="studio-sub">STUDIOS</div>
+    </div>
+  </div>
+
+  <div id="splash-notice" class="boot-stage hidden">
+    <div class="notice-box">
+      <div class="notice-badge">
+        <div class="notice-badge-top">MATURE</div>
+        <div class="notice-badge-big">17+</div>
+      </div>
+      <div class="notice-copy">
+        <h3>CONTENT ADVISORY</h3>
+        <p>This work of fiction is intended for <b>mature audiences, 17 and older</b>. It contains
+        intense violence, blood, body horror, disturbing imagery, frightening themes, sustained
+        psychological tension, and simulated firearms use.</p>
+        <p class="notice-flash">Contains flashing lights and sudden loud sounds.</p>
+        <p class="notice-disclaimer">This is an unrated independent prototype. It has <b>not</b> been
+        reviewed or rated by the ESRB, PEGI, USK, or any other ratings authority, and the notice above
+        is not an official rating. All characters, places, organisations and events are fictional.</p>
+      </div>
+      <div class="notice-continue">Press any key to continue</div>
+    </div>
+  </div>
+
+  <div id="splash-title" class="boot-stage hidden">
+    <div class="title-wrap">
+      <div class="title-kicker">NINEFOLD LANTERN STUDIOS PRESENTS</div>
+      <h1 class="game-title">BLACKROOT</h1>
+      <div class="title-sub">NIGHTFALL IN THE HOLLOW</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MAIN MENU ============ -->
+<div id="mainmenu" class="screen hidden">
+  <div class="menu-bg"></div>
+  <div class="menu-inner">
+    <div class="menu-brand">
+      <h1 class="game-title small">BLACKROOT</h1>
+      <div class="title-sub small">NIGHTFALL IN THE HOLLOW</div>
+    </div>
+    <nav class="menu-nav">
+      <button class="mbtn" data-action="new">NEW GAME</button>
+      <button class="mbtn" data-action="sandbox">SANDBOX</button>
+      <button class="mbtn" data-action="coop">CO-OP</button>
+      <button class="mbtn" data-action="continue" id="btn-continue" disabled>CONTINUE</button>
+      <button class="mbtn" data-action="armoury">ARMOURY</button>
+      <button class="mbtn" data-action="settings">SETTINGS</button>
+      <button class="mbtn" data-action="credits">CREDITS</button>
+      <button class="mbtn" data-action="quit">QUIT</button>
+    </nav>
+    <div class="menu-foot">
+      <span id="build-tag">PROTOTYPE BUILD · VERTICAL SLICE</span>
+      <span id="seed-tag"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PAUSE ============ -->
+<div id="pause" class="screen hidden">
+  <div class="panel narrow">
+    <header><h2>PAUSED</h2></header>
+    <nav class="menu-nav compact">
+      <button class="mbtn" data-action="resume">RESUME</button>
+      <button class="mbtn" data-action="armoury">ARMOURY</button>
+      <button class="mbtn" data-action="save">SAVE GAME</button>
+      <button class="mbtn" data-action="settings">SETTINGS</button>
+      <button class="mbtn" data-action="restart">RESTART</button>
+      <button class="mbtn" data-action="menu">MAIN MENU</button>
+    </nav>
+    <footer><div id="pause-stats"></div></footer>
+  </div>
+</div>
+
+<!-- ============ SANDBOX MOD MENU ============ -->
+<div id="modmenu" class="hidden">
+  <div class="mm-panel">
+    <header class="mm-head">
+      <h2>MOD MENU</h2>
+      <div class="mm-sub">SANDBOX · <b>`</b> or <b>F1</b> to close</div>
+    </header>
+    <div class="mm-tabs" id="mm-tabs"></div>
+    <div class="mm-body" id="mm-body"></div>
+    <footer class="mm-foot">
+      <button class="mbtn small" data-mm="tutorial">TUTORIAL</button>
+      <button class="mbtn small" data-mm="reset">RESET ALL</button>
+      <div class="mm-hint" id="mm-hint"></div>
+    </footer>
+  </div>
+</div>
+
+<div id="sbtut" class="hidden">
+  <div class="sbt-card">
+    <div class="sbt-step"></div>
+    <h3 class="sbt-title"></h3>
+    <p class="sbt-body"></p>
+    <div class="sbt-nav">
+      <button class="mbtn small" data-sbt="skip">SKIP</button>
+      <button class="mbtn small" data-sbt="back">BACK</button>
+      <button class="mbtn small primary" data-sbt="next">NEXT</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ARMOURY / LOADOUT ============ -->
+<div id="armoury" class="screen hidden">
+  <div class="ar-wrap">
+    <div class="ar-panel">
+      <header class="ar-head">
+        <h2>ARMOURY</h2>
+        <div class="ar-points"><b id="ar-points">0</b> ARMOURY POINTS</div>
+      </header>
+      <div class="tabs ar-tabs">
+        <button class="tab active" data-artab="weapons">WEAPONS</button>
+        <button class="tab" data-artab="attach">ATTACHMENTS</button>
+        <button class="tab" data-artab="camo">FINISH</button>
+        <button class="tab" data-artab="upgrades">UPGRADES</button>
+        <button class="tab" data-artab="operator">OPERATOR</button>
+      </div>
+      <div class="ar-body" id="ar-body"></div>
+      <footer class="ar-foot">
+        <div id="ar-stats" class="ar-statline"></div>
+        <button class="mbtn small primary" data-action="back">DONE</button>
+      </footer>
+    </div>
+    <div class="ar-stage">
+      <div class="ar-caption">
+        <div class="ar-name" id="ar-name"></div>
+        <div class="ar-sub" id="ar-sub"></div>
+      </div>
+      <div class="ar-hint">DRAG TO TURN</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div id="settings" class="screen hidden">
+  <div class="panel wide">
+    <header><h2>SETTINGS</h2></header>
+    <div class="tabs">
+      <button class="tab active" data-tab="graphics">GRAPHICS</button>
+      <button class="tab" data-tab="audio">AUDIO</button>
+      <button class="tab" data-tab="controls">CONTROLS</button>
+      <button class="tab" data-tab="controller">CONTROLLER</button>
+      <button class="tab" data-tab="gameplay">GAMEPLAY</button>
+    </div>
+    <div class="tab-body" id="settings-body"></div>
+    <footer>
+      <button class="mbtn small" data-action="defaults">RESTORE DEFAULTS</button>
+      <button class="mbtn small primary" data-action="back">BACK</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ============ CO-OP ============ -->
+<div id="coop" class="screen hidden">
+  <div class="panel wide">
+    <header>
+      <h2>CO-OP</h2>
+      <div class="co-status" id="co-status">NOT CONNECTED</div>
+    </header>
+
+    <div class="co-body">
+      <section class="co-side">
+        <label class="co-field">
+          <span>CALLSIGN</span>
+          <input id="co-name" type="text" maxlength="18" spellcheck="false" autocomplete="off"/>
+        </label>
+        <label class="co-field">
+          <span>SERVER</span>
+          <input id="co-server" type="text" spellcheck="false" autocomplete="off" placeholder="ws://localhost:8787/net"/>
+        </label>
+        <p class="co-note" id="co-servernote">
+          Run <code>npm run server</code> on any machine, then point everybody at it.
+        </p>
+
+        <div class="co-actions">
+          <button class="mbtn small primary" data-co="host">HOST A NEW GAME</button>
+        </div>
+
+        <div class="co-join">
+          <input id="co-code" type="text" maxlength="6" spellcheck="false" autocomplete="off" placeholder="CODE"/>
+          <button class="mbtn small" data-co="join">JOIN</button>
+        </div>
+        <p class="co-note">Everyone who enters the same code lands in the same world, on the same seed, on the same road through the biomes.</p>
+
+        <div class="co-local">
+          <div class="co-local-head">NO SERVER?</div>
+          <p class="co-note">You can play co-op on this computer with no server at all — open the game in a second window and join with the code. Friends on other machines need the server.</p>
+          <button class="mbtn small" data-co="local">PLAY ON THIS COMPUTER</button>
+          <div class="co-note" id="co-localrooms"></div>
+        </div>
+      </section>
+
+      <section class="co-main">
+        <div class="co-code-box hidden" id="co-codebox">
+          <div class="co-code-label">GAME CODE</div>
+          <div class="co-code" id="co-codeval">------</div>
+          <button class="mbtn tiny" data-co="copy">COPY</button>
+        </div>
+
+        <div class="co-roster-head">SQUAD <span id="co-count"></span></div>
+        <ul class="co-roster" id="co-roster"><li class="co-empty">Nobody yet.</li></ul>
+
+        <div class="co-chat" id="co-chatlog"></div>
+        <div class="co-say">
+          <input id="co-chatin" type="text" maxlength="160" placeholder="Say something to the squad…" autocomplete="off"/>
+          <button class="mbtn tiny" data-co="say">SEND</button>
+        </div>
+        <div class="co-err" id="co-err"></div>
+      </section>
+    </div>
+
+    <footer>
+      <button class="mbtn small" data-co="leave">LEAVE GAME</button>
+      <button class="mbtn small primary" data-co="play">START / RESUME</button>
+      <button class="mbtn small" data-action="back">BACK</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ============ CREDITS ============ -->
+<div id="credits" class="screen hidden">
+  <div class="panel narrow">
+    <header><h2>CREDITS</h2></header>
+    <div class="credits-body">
+      <p class="c-role">A NINEFOLD LANTERN STUDIOS PROTOTYPE</p>
+      <p class="c-title">BLACKROOT — NIGHTFALL IN THE HOLLOW</p>
+      <hr/>
+      <p><b>Design, Code, Systems Architecture</b><br/>Ninefold Lantern internal team</p>
+      <p><b>Procedural World, Creatures &amp; Audio</b><br/>Generated at runtime — no sampled assets</p>
+      <p><b>Engine</b><br/>Custom WebGL renderer layer built on three.js (MIT)</p>
+      <hr/>
+      <p class="c-small">All characters, creatures, locations, organisations, brands and events depicted
+      are entirely fictional and original. Any resemblance to real persons or existing works is
+      unintended. This prototype is unrated and not affiliated with any ratings authority.</p>
+    </div>
+    <footer><button class="mbtn small primary" data-action="back">BACK</button></footer>
+  </div>
+</div>
+
+<!-- ============ DEATH ============ -->
+<div id="death" class="screen hidden">
+  <div class="death-inner">
+    <h1 class="died">YOU DIED</h1>
+    <div id="death-cause"></div>
+    <div id="death-stats"></div>
+    <nav class="menu-nav compact">
+      <button class="mbtn" data-action="loadsave" id="btn-death-load">RESTART FROM LAST SAVE</button>
+      <button class="mbtn" data-action="restart">RESTART THE NIGHT</button>
+      <button class="mbtn" data-action="menu">MAIN MENU</button>
+    </nav>
+  </div>
+</div>
+
+<!-- ============ LOADING ============ -->
+<div id="loading" class="screen hidden">
+  <div class="load-inner">
+    <div class="load-title">ENTERING THE HOLLOW</div>
+    <div class="load-bar"><i id="load-fill"></i></div>
+    <div class="load-step" id="load-step">…</div>
+    <div class="load-tip" id="load-tip"></div>
+  </div>
+</div>
+
+<!-- ============ NOTE READER ============ -->
+<div id="reader" class="screen hidden">
+  <div class="panel note">
+    <header><h2 id="note-title">NOTE</h2></header>
+    <div class="note-body" id="note-body"></div>
+    <footer><button class="mbtn small primary" data-action="close">CLOSE</button></footer>
+  </div>
+</div>
+
+<!-- ============ FATAL ERROR ============ -->
+<div id="fatal" class="screen hidden">
+  <div class="panel narrow">
+    <header><h2>ENGINE ERROR</h2></header>
+    <pre id="fatal-msg"></pre>
+    <footer><button class="mbtn small primary" onclick="location.reload()">RELOAD</button></footer>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "./node_modules/three/build/three.module.js" } }
+</script>
+<script type="module" src="scripts/main.js"></script>
+</body>
+</html>

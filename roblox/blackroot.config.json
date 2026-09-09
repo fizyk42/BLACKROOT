@@ -1,0 +1,18 @@
+{
+  "_comment": [
+    "Fill these in from your own experience. Neither number is a secret — they",
+    "are in the URLs of your own pages — which is why they live in the repo and",
+    "the API key does not.",
+    "",
+    "universeId: create.roblox.com -> Creations -> your experience. The number in",
+    "            the URL after /experiences/ is the universe id.",
+    "placeId:    the same experience -> Places -> the place you want to publish.",
+    "            The number in its URL (also the number in roblox.com/games/<id>).",
+    "",
+    "The API key itself goes in the ROBLOX_API_KEY environment variable and",
+    "nowhere else. Never put it in this file; this file is committed."
+  ],
+  "universeId": 0,
+  "placeId": 0,
+  "placeFile": "build/BLACKROOT.rbxlx"
+}

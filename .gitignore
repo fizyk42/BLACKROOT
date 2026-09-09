@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build output. `npm run build` regenerates all of it in seconds, and the
+# playable copy that GitHub Pages serves is committed at docs/index.html.
+dist/
+
+# Test artefacts — screenshots and captures the suites write as they run.
+tools/shots/
+tools/captures/
+
+# Generated place files for the Roblox port; `npm run roblox:place` rebuilds
+# them from the Luau sources in roblox/src.
+roblox/build/
+
+# Standalone music renders. The game generates its score at runtime from
+# oscillators and never loads a file, so these are deliverables rather than
+# dependencies — 14 MB of binaries the build does not read.
+assets/music/
+
+# Packaged archives
+*.zip
+
+# Local credentials. Nothing here should ever hold one, and this is the
+# belt-and-braces so a stray .env cannot be committed by accident.
+.env
+.env.*
+*.key
+*.pem
+
+# Git bundles — a transport artefact, not source.
+*.bundle

@@ -1,0 +1,40 @@
+{
+  "name": "blackroot",
+  "version": "0.9.0",
+  "private": true,
+  "description": "BLACKROOT \u2014 Nightfall in the Hollow. A first-person open-world survival horror prototype.",
+  "type": "module",
+  "scripts": {
+    "start": "node serve.mjs",
+    "dev": "node serve.mjs",
+    "build": "node build.mjs",
+    "build:debug": "node build.mjs --nomin",
+    "packweb": "node tools/packweb.mjs",
+    "watch": "node build.mjs --watch",
+    "test": "node tools/smoketest.mjs",
+    "verify": "node tools/filetest.mjs",
+    "hostedtest": "node tools/hostedtest.mjs",
+    "screens": "node tools/screens.mjs",
+    "profile": "node tools/profile.mjs",
+    "server": "node server.mjs",
+    "nettest": "node tools/nettest.mjs",
+    "looktest": "node tools/looktest.mjs",
+    "ghosttest": "node tools/ghostguntest.mjs",
+    "guidetest": "node tools/guidetest.mjs",
+    "localtest": "node tools/localcooptest.mjs",
+    "perftest": "node tools/perftest.mjs",
+    "difftest": "node tools/difficultytest.mjs",
+    "roblox:test": "node tools/robloxtest.mjs",
+    "roblox:place": "node roblox/tools/buildplace.mjs",
+    "roblox:sync": "node roblox/tools/syncserver.mjs",
+    "roblox:plugin": "node roblox/tools/installplugin.mjs",
+    "roblox:bot": "node roblox/tools/bot.mjs"
+  },
+  "dependencies": {
+    "three": "0.169.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "playwright": "^1.49.0"
+  }
+}
