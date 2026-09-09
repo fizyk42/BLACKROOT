@@ -8,6 +8,8 @@ files:
   - desktop/**
   - docs/index.html
   - assets/icon/icon-256.png
+  - assets/icon/icon-512.png
+  - assets/icon/icon-1024.png
   - package.json
   - '!node_modules/**'
 win:
@@ -16,6 +18,17 @@ win:
       arch: [x64]
   icon: assets/icon/icon-256.png
   artifactName: BLACKROOT-Setup-${version}-${arch}.${ext}
+mac:
+  category: public.app-category.games
+  target:
+    - target: dmg
+      arch: [universal]
+    - target: zip
+      arch: [universal]
+  icon: assets/icon/icon-1024.png
+  artifactName: BLACKROOT-${version}-macOS-${arch}.${ext}
+  hardenedRuntime: false
+  gatekeeperAssess: false
 nsis:
   oneClick: false
   perMachine: false
