@@ -3,13 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<title>BLACKROOT — Nightfall in the Hollow</title>
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="BLACKROOT" />
 <meta name="mobile-web-app-capable" content="yes" />
-<title>BLACKROOT — Nightfall in the Hollow</title>
 <link rel="apple-touch-icon" sizes="180x180" href="assets/icon/icon-180.png" />
-<link rel="manifest" href="manifest.webmanifest" />
 <!-- Icon: assets/icon/. The tab favicon is inlined as a data URI so the
      single-file build stays self-contained. Larger icons (apple-touch, PWA,
      desktop packaging) ship as files in assets/icon/ — see the README. -->
@@ -124,3 +123,265 @@
   <div id="splash-title" class="boot-stage hidden">
     <div class="title-wrap">
       <div class="title-kicker">NINEFOLD LANTERN STUDIOS PRESENTS</div>
+      <h1 class="game-title">BLACKROOT</h1>
+      <div class="title-sub">NIGHTFALL IN THE HOLLOW</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MAIN MENU ============ -->
+<div id="mainmenu" class="screen hidden">
+  <div class="menu-bg"></div>
+  <div class="menu-inner">
+    <div class="menu-brand">
+      <h1 class="game-title small">BLACKROOT</h1>
+      <div class="title-sub small">NIGHTFALL IN THE HOLLOW</div>
+    </div>
+    <nav class="menu-nav">
+      <button class="mbtn" data-action="new">NEW GAME</button>
+      <button class="mbtn" data-action="sandbox">SANDBOX</button>
+      <button class="mbtn" data-action="coop">CO-OP</button>
+      <button class="mbtn" data-action="continue" id="btn-continue" disabled>CONTINUE</button>
+      <button class="mbtn" data-action="armoury">ARMOURY</button>
+      <button class="mbtn" data-action="settings">SETTINGS</button>
+      <button class="mbtn" data-action="credits">CREDITS</button>
+      <button class="mbtn" data-action="quit">QUIT</button>
+    </nav>
+    <div class="menu-foot">
+      <span id="build-tag">PROTOTYPE BUILD · VERTICAL SLICE</span>
+      <span id="seed-tag"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PAUSE ============ -->
+<div id="pause" class="screen hidden">
+  <div class="panel narrow">
+    <header><h2>PAUSED</h2></header>
+    <nav class="menu-nav compact">
+      <button class="mbtn" data-action="resume">RESUME</button>
+      <button class="mbtn" data-action="armoury">ARMOURY</button>
+      <button class="mbtn" data-action="save">SAVE GAME</button>
+      <button class="mbtn" data-action="settings">SETTINGS</button>
+      <button class="mbtn" data-action="restart">RESTART</button>
+      <button class="mbtn" data-action="menu">MAIN MENU</button>
+    </nav>
+    <footer><div id="pause-stats"></div></footer>
+  </div>
+</div>
+
+<!-- ============ SANDBOX MOD MENU ============ -->
+<div id="modmenu" class="hidden">
+  <div class="mm-panel">
+    <header class="mm-head">
+      <h2>MOD MENU</h2>
+      <div class="mm-sub">SANDBOX · <b>`</b> or <b>F1</b> to close</div>
+    </header>
+    <div class="mm-tabs" id="mm-tabs"></div>
+    <div class="mm-body" id="mm-body"></div>
+    <footer class="mm-foot">
+      <button class="mbtn small" data-mm="tutorial">TUTORIAL</button>
+      <button class="mbtn small" data-mm="reset">RESET ALL</button>
+      <div class="mm-hint" id="mm-hint"></div>
+    </footer>
+  </div>
+</div>
+
+<div id="sbtut" class="hidden">
+  <div class="sbt-card">
+    <div class="sbt-step"></div>
+    <h3 class="sbt-title"></h3>
+    <p class="sbt-body"></p>
+    <div class="sbt-nav">
+      <button class="mbtn small" data-sbt="skip">SKIP</button>
+      <button class="mbtn small" data-sbt="back">BACK</button>
+      <button class="mbtn small primary" data-sbt="next">NEXT</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ARMOURY / LOADOUT ============ -->
+<div id="armoury" class="screen hidden">
+  <div class="ar-wrap">
+    <div class="ar-panel">
+      <header class="ar-head">
+        <h2>ARMOURY</h2>
+        <div class="ar-points"><b id="ar-points">0</b> ARMOURY POINTS</div>
+      </header>
+      <div class="tabs ar-tabs">
+        <button class="tab active" data-artab="weapons">WEAPONS</button>
+        <button class="tab" data-artab="attach">ATTACHMENTS</button>
+        <button class="tab" data-artab="camo">FINISH</button>
+        <button class="tab" data-artab="upgrades">UPGRADES</button>
+        <button class="tab" data-artab="operator">OPERATOR</button>
+      </div>
+      <div class="ar-body" id="ar-body"></div>
+      <footer class="ar-foot">
+        <div id="ar-stats" class="ar-statline"></div>
+        <button class="mbtn small primary" data-action="back">DONE</button>
+      </footer>
+    </div>
+    <div class="ar-stage">
+      <div class="ar-caption">
+        <div class="ar-name" id="ar-name"></div>
+        <div class="ar-sub" id="ar-sub"></div>
+      </div>
+      <div class="ar-hint">DRAG TO TURN</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div id="settings" class="screen hidden">
+  <div class="panel wide">
+    <header><h2>SETTINGS</h2></header>
+    <div class="tabs">
+      <button class="tab active" data-tab="graphics">GRAPHICS</button>
+      <button class="tab" data-tab="audio">AUDIO</button>
+      <button class="tab" data-tab="controls">CONTROLS</button>
+      <button class="tab" data-tab="controller">CONTROLLER</button>
+      <button class="tab" data-tab="gameplay">GAMEPLAY</button>
+    </div>
+    <div class="tab-body" id="settings-body"></div>
+    <footer>
+      <button class="mbtn small" data-action="defaults">RESTORE DEFAULTS</button>
+      <button class="mbtn small primary" data-action="back">BACK</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ============ CO-OP ============ -->
+<div id="coop" class="screen hidden">
+  <div class="panel wide">
+    <header>
+      <h2>CO-OP</h2>
+      <div class="co-status" id="co-status">NOT CONNECTED</div>
+    </header>
+
+    <div class="co-body">
+      <section class="co-side">
+        <label class="co-field">
+          <span>CALLSIGN</span>
+          <input id="co-name" type="text" maxlength="18" spellcheck="false" autocomplete="off"/>
+        </label>
+        <label class="co-field">
+          <span>SERVER</span>
+          <input id="co-server" type="text" spellcheck="false" autocomplete="off" placeholder="ws://localhost:8787/net"/>
+        </label>
+        <p class="co-note" id="co-servernote">
+          Run <code>npm run server</code> on any machine, then point everybody at it.
+        </p>
+
+        <div class="co-actions">
+          <button class="mbtn small primary" data-co="host">HOST A NEW GAME</button>
+        </div>
+
+        <div class="co-join">
+          <input id="co-code" type="text" maxlength="6" spellcheck="false" autocomplete="off" placeholder="CODE"/>
+          <button class="mbtn small" data-co="join">JOIN</button>
+        </div>
+        <p class="co-note">Everyone who enters the same code lands in the same world, on the same seed, on the same road through the biomes.</p>
+
+        <div class="co-local">
+          <div class="co-local-head">NO SERVER?</div>
+          <p class="co-note">You can play co-op on this computer with no server at all — open the game in a second window and join with the code. Friends on other machines need the server.</p>
+          <button class="mbtn small" data-co="local">PLAY ON THIS COMPUTER</button>
+          <div class="co-note" id="co-localrooms"></div>
+        </div>
+      </section>
+
+      <section class="co-main">
+        <div class="co-code-box hidden" id="co-codebox">
+          <div class="co-code-label">GAME CODE</div>
+          <div class="co-code" id="co-codeval">------</div>
+          <button class="mbtn tiny" data-co="copy">COPY</button>
+        </div>
+
+        <div class="co-roster-head">SQUAD <span id="co-count"></span></div>
+        <ul class="co-roster" id="co-roster"><li class="co-empty">Nobody yet.</li></ul>
+
+        <div class="co-chat" id="co-chatlog"></div>
+        <div class="co-say">
+          <input id="co-chatin" type="text" maxlength="160" placeholder="Say something to the squad…" autocomplete="off"/>
+          <button class="mbtn tiny" data-co="say">SEND</button>
+        </div>
+        <div class="co-err" id="co-err"></div>
+      </section>
+    </div>
+
+    <footer>
+      <button class="mbtn small" data-co="leave">LEAVE GAME</button>
+      <button class="mbtn small primary" data-co="play">START / RESUME</button>
+      <button class="mbtn small" data-action="back">BACK</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ============ CREDITS ============ -->
+<div id="credits" class="screen hidden">
+  <div class="panel narrow">
+    <header><h2>CREDITS</h2></header>
+    <div class="credits-body">
+      <p class="c-role">A NINEFOLD LANTERN STUDIOS PROTOTYPE</p>
+      <p class="c-title">BLACKROOT — NIGHTFALL IN THE HOLLOW</p>
+      <hr/>
+      <p><b>Design, Code, Systems Architecture</b><br/>Ninefold Lantern internal team</p>
+      <p><b>Procedural World, Creatures &amp; Audio</b><br/>Generated at runtime — no sampled assets</p>
+      <p><b>Engine</b><br/>Custom WebGL renderer layer built on three.js (MIT)</p>
+      <hr/>
+      <p class="c-small">All characters, creatures, locations, organisations, brands and events depicted
+      are entirely fictional and original. Any resemblance to real persons or existing works is
+      unintended. This prototype is unrated and not affiliated with any ratings authority.</p>
+    </div>
+    <footer><button class="mbtn small primary" data-action="back">BACK</button></footer>
+  </div>
+</div>
+
+<!-- ============ DEATH ============ -->
+<div id="death" class="screen hidden">
+  <div class="death-inner">
+    <h1 class="died">YOU DIED</h1>
+    <div id="death-cause"></div>
+    <div id="death-stats"></div>
+    <nav class="menu-nav compact">
+      <button class="mbtn" data-action="loadsave" id="btn-death-load">RESTART FROM LAST SAVE</button>
+      <button class="mbtn" data-action="restart">RESTART THE NIGHT</button>
+      <button class="mbtn" data-action="menu">MAIN MENU</button>
+    </nav>
+  </div>
+</div>
+
+<!-- ============ LOADING ============ -->
+<div id="loading" class="screen hidden">
+  <div class="load-inner">
+    <div class="load-title">ENTERING THE HOLLOW</div>
+    <div class="load-bar"><i id="load-fill"></i></div>
+    <div class="load-step" id="load-step">…</div>
+    <div class="load-tip" id="load-tip"></div>
+  </div>
+</div>
+
+<!-- ============ NOTE READER ============ -->
+<div id="reader" class="screen hidden">
+  <div class="panel note">
+    <header><h2 id="note-title">NOTE</h2></header>
+    <div class="note-body" id="note-body"></div>
+    <footer><button class="mbtn small primary" data-action="close">CLOSE</button></footer>
+  </div>
+</div>
+
+<!-- ============ FATAL ERROR ============ -->
+<div id="fatal" class="screen hidden">
+  <div class="panel narrow">
+    <header><h2>ENGINE ERROR</h2></header>
+    <pre id="fatal-msg"></pre>
+    <footer><button class="mbtn small primary" onclick="location.reload()">RELOAD</button></footer>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "./node_modules/three/build/three.module.js" } }
+</script>
+<script type="module" src="scripts/main.js"></script>
+</body>
+</html>
