@@ -9,6 +9,7 @@ import { GameManager } from './core/GameManager.js';
 import { Settings } from './core/Settings.js';
 import { Audio } from './core/AudioManager.js';
 import { installTouchControls } from './core/TouchControls.js';
+import { installIOSInstallerUI } from './ui/IOSInstall.js';
 
 function start() {
   const canvas = document.getElementById('gl');
@@ -27,6 +28,10 @@ function start() {
   // Install the mobile control surface only on touch-capable devices. Desktop
   // mouse, keyboard and controller behaviour remains unchanged.
   installTouchControls();
+
+  // Add an iOS install option to the main menu. On iPhone/iPad this guides the
+  // player through Safari's Add to Home Screen flow and launches as a full-screen PWA.
+  installIOSInstallerUI();
 
   // The first user gesture anywhere unlocks the audio context.
   const unlock = () => { Audio.init(); Audio.resume(); };
