@@ -37,8 +37,9 @@ app.whenReady().then(async () => {
   win.webContents.session.setPermissionRequestHandler((contents, permission, callback) => {
     callback(contents === win.webContents && permission === 'pointerLock');
   });
-  win.webContents.on('console-message', (_event, details) => {
-    if (details.level === 'error') errors.push(details.message);
+  win.webContents.on('console-message', (event, level, message) => {
+    const details = typeof level === 'object' ? level : {level: event.level ?? level, message: event.message ?? message};
+    if (details.level === 'error' || details.level === 3) errors.push(details.message);
   });
   await win.loadURL('pacific://game/index.html');
   if (smoke) {
@@ -51,7 +52,8 @@ app.whenReady().then(async () => {
         if (Date.now() > deadline) throw new Error('Game boot timeout');
         await new Promise(r => setTimeout(r, 500));
       }
-      await win.webContents.executeJavaScript("window.__game.startGame('freeroam')", true);
+      const startError = await win.webContents.executeJavaScript("(() => { try { window.__game.startGame('freeroam'); return null; } catch(e) { return e.stack; } })()", true);
+      if (startError) throw new Error(startError);
       await new Promise(r => setTimeout(r, 6000));
       const state = await win.webContents.executeJavaScript(`({running: __game.running, mode: __game.mode,
         calls: __game.renderer.info.render.calls, triangles: __game.renderer.info.render.triangles,

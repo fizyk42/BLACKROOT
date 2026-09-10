@@ -227,7 +227,10 @@ function vehicleGeometry(s) {
   const gh = greenhouse(s);
   bodyParts.push(gh.frame);
 
-  const body = mergeGeometries(bodyParts, false);
+  // Extruded panels are non-indexed; normalize the indexed box panels before merging.
+  const normalizedBody = bodyParts.map(geo => geo.index ? geo.toNonIndexed() : geo);
+  const body = mergeGeometries(normalizedBody, false);
+  for (const geo of new Set([...bodyParts, ...normalizedBody])) geo.dispose();
 
   // Bumpers + grille in dark trim.
   const trimParts = [];
