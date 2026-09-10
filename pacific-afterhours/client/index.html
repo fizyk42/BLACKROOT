@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Pacific Afterhours — San Aurelio</title>
+<link rel="stylesheet" href="css/ui.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/three.module.js",
+    "three/addons/": "./vendor/three/addons/"
+  }
+}
+</script>
+</head>
+<body>
+
+<canvas id="viewport"></canvas>
+
+<!-- ============ BOOT / LOADING ============ -->
+<div id="boot" class="screen">
+  <div class="boot-inner">
+    <div class="marquee">
+      <span class="marquee-pacific">PACIFIC</span>
+      <span class="marquee-after">AFTERHOURS</span>
+    </div>
+    <p class="tagline">San Aurelio, California. The shop closes at nine. Everything else stays open.</p>
+    <div class="loadbar"><i id="loadfill"></i></div>
+    <p id="loadmsg" class="loadmsg">Waking up the city</p>
+  </div>
+</div>
+
+<!-- ============ MAIN MENU ============ -->
+<div id="menu" class="screen hidden">
+  <div class="menu-grid">
+    <div class="menu-left">
+      <div class="marquee small">
+        <span class="marquee-pacific">PACIFIC</span>
+        <span class="marquee-after">AFTERHOURS</span>
+      </div>
+      <nav id="mainmenu">
+        <button data-act="story">Story Mode</button>
+        <button data-act="freeroam">Free Roam</button>
+        <button data-act="online">Online</button>
+        <button data-act="settings">Settings</button>
+        <button data-act="quit">Quit</button>
+      </nav>
+      <p class="build">build <span id="buildver"></span> · prototype</p>
+    </div>
+    <div class="menu-right" id="menupanel"></div>
+  </div>
+</div>
+
+<!-- ============ IN-GAME HUD ============ -->
+<div id="hud" class="hidden">
+  <div id="hud-topleft">
+    <div id="minimap-wrap">
+      <canvas id="minimap" width="220" height="220"></canvas>
+      <div id="wanted"></div>
+    </div>
+    <div id="bars">
+      <div class="bar health"><i id="healthfill"></i></div>
+      <div class="bar stamina"><i id="staminafill"></i></div>
+    </div>
+  </div>
+
+  <div id="hud-topright">
+    <div id="cash">$0</div>
+    <div id="clock">—</div>
+    <div id="weather"></div>
+  </div>
+
+  <div id="objective" class="hidden">
+    <span id="objective-title"></span>
+    <span id="objective-text"></span>
+    <span id="objective-timer"></span>
+  </div>
+
+  <div id="speedo" class="hidden">
+    <canvas id="speedo-canvas" width="260" height="150"></canvas>
+    <div id="gear">N</div>
+  </div>
+
+  <div id="weaponbox" class="hidden">
+    <span id="weaponname"></span><span id="ammo"></span>
+  </div>
+
+  <div id="prompt" class="hidden"></div>
+  <div id="crosshair" class="hidden"></div>
+  <div id="subtitle" class="hidden"></div>
+  <div id="toasts"></div>
+  <div id="bigmsg" class="hidden"></div>
+  <div id="netroster" class="hidden"></div>
+</div>
+
+<!-- ============ PAUSE / PHONE / MAP OVERLAY ============ -->
+<div id="overlay" class="screen hidden">
+  <div class="overlay-panel">
+    <header id="overlay-tabs"></header>
+    <div id="overlay-body"></div>
+    <footer id="overlay-foot"><span>Esc — back</span></footer>
+  </div>
+</div>
+
+<div id="shop" class="screen hidden">
+  <div class="shop-panel">
+    <header><h2 id="shop-title"></h2><span id="shop-cash"></span></header>
+    <div id="shop-body"></div>
+    <footer><button id="shop-close">Leave</button></footer>
+  </div>
+</div>
+
+<noscript><p style="color:#fff;padding:2rem">This game needs JavaScript and WebGL 2.</p></noscript>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

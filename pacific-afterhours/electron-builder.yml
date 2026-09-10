@@ -1,0 +1,28 @@
+appId: com.pacificafterhours.game
+productName: Pacific Afterhours
+asar: true
+directories:
+  output: release
+files:
+  - desktop/**
+  - client/**
+  - LICENSE
+  - package.json
+  - '!node_modules/**'
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  artifactName: Pacific-Afterhours-Setup-${version}-x64.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Pacific Afterhours
+  uninstallDisplayName: Pacific Afterhours
+  deleteAppDataOnUninstall: false
+  runAfterFinish: true
+publish: null

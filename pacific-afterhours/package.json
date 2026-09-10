@@ -1,0 +1,30 @@
+{
+  "name": "pacific-afterhours",
+  "version": "0.3.1",
+  "private": true,
+  "description": "PACIFIC AFTERHOURS - an original 3D open-world sandbox action game set in San Aurelio.",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "play": "node server/server.js",
+    "test": "node tools/verify.js && node tools/net-test.js",
+    "test:net": "node tools/net-test.js",
+    "test:logic": "node tools/verify.js",
+    "build:web": "node tools/build-web.js",
+    "desktop:start": "electron .",
+    "desktop:dist": "electron-builder --win nsis --x64 --publish never"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "license": "MIT",
+  "main": "desktop/main.cjs",
+  "author": "Pacific Afterhours",
+  "devDependencies": {
+    "electron": "44.3.0",
+    "electron-builder": "26.15.3"
+  }
+}

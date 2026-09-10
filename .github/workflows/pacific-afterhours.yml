@@ -1,0 +1,89 @@
+name: Pacific Afterhours Windows and web
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pacific-afterhours/**'
+      - '.github/workflows/pacific-afterhours.yml'
+
+permissions:
+  contents: write
+concurrency:
+  group: pacific-afterhours-release
+  cancel-in-progress: false
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: pacific-afterhours
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: pacific-afterhours/package-lock.json
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Verify game and multiplayer logic
+        run: npm test
+      - name: Build Windows installer
+        run: npm run desktop:dist
+      - name: Install and render the game
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installer = (Get-ChildItem release/Pacific-Afterhours-Setup-*-x64.exe | Select-Object -First 1).FullName
+          $installDir = Join-Path $env:LOCALAPPDATA 'Programs/PacificAfterhours'
+          $installed = Start-Process $installer -ArgumentList '/S', "/D=$installDir" -Wait -PassThru
+          if ($installed.ExitCode -ne 0) { throw 'Installation failed' }
+          $exe = Join-Path $installDir 'Pacific Afterhours.exe'
+          if (!(Test-Path $exe)) { throw 'Installed game executable missing' }
+          $report = Join-Path $PWD 'release/game-test-report.json'
+          $shot = Join-Path $PWD 'website/gameplay.jpg'
+          $game = Start-Process $exe -ArgumentList '--smoke-test', "--report=$report", "--screenshot=$shot" -PassThru
+          if (!$game.WaitForExit(240000)) { $game.Kill(); throw 'Game smoke test timed out' }
+          if ($game.ExitCode -ne 0) { if (Test-Path $report) { Get-Content $report }; throw 'Game failed its render test' }
+          $result = Get-Content $report | ConvertFrom-Json
+          if (!$result.passed) { throw 'Game did not pass smoke test' }
+          if (!(Test-Path $shot)) { throw 'Gameplay capture missing' }
+      - name: Build browser website
+        run: npm run build:web
+      - name: Publish verified download
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = (Get-Content package.json | ConvertFrom-Json).version
+          $tag = "pacific-afterhours-v$version"
+          $installer = (Get-ChildItem release/Pacific-Afterhours-Setup-*-x64.exe | Select-Object -First 1).FullName
+          $hash = (Get-FileHash $installer -Algorithm SHA256).Hash.ToLower()
+          "$hash  $(Split-Path $installer -Leaf)" | Set-Content release/SHA256SUMS.txt
+          Compress-Archive -Path web/* -DestinationPath release/Pacific-Afterhours-Web.zip -Force
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag $installer release/SHA256SUMS.txt release/game-test-report.json release/Pacific-Afterhours-Web.zip website/gameplay.jpg --clobber
+          } else {
+            gh release create $tag $installer release/SHA256SUMS.txt release/game-test-report.json release/Pacific-Afterhours-Web.zip website/gameplay.jpg --target "${{ github.sha }}" --title "Pacific Afterhours $version" --notes-file desktop/RELEASE-NOTES.md --latest=false
+          }
+          if ($LASTEXITCODE -ne 0) { throw 'Release publishing failed' }
+      - name: Keep installer and test output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pacific-Afterhours-Windows
+          path: |
+            pacific-afterhours/release/*.exe
+            pacific-afterhours/release/*.json
+            pacific-afterhours/release/*.txt
+            pacific-afterhours/release/*.zip
+            pacific-afterhours/website/gameplay.jpg
+          if-no-files-found: warn

@@ -1,0 +1,13 @@
+import { cpSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const out = path.join(root, 'web');
+mkdirSync(out, { recursive: true });
+rmSync(path.join(out, 'play'), { recursive: true, force: true });
+cpSync(path.join(root, 'client'), path.join(out, 'play'), { recursive: true });
+cpSync(path.join(root, 'website'), out, { recursive: true });
+writeFileSync(path.join(out, '.nojekyll'), '');
+const index = path.join(out, 'play/index.html');
+writeFileSync(index, readFileSync(index, 'utf8').replace('<body>', '<body data-hosted="true">'));
+console.log('Built website and playable game in web/');
