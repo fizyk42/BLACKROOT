@@ -26,7 +26,7 @@ concurrency:
 jobs:
   windows:
     runs-on: windows-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
     steps:
@@ -51,7 +51,7 @@ jobs:
           if ($html -notmatch 'window.BLACKROOT|game-title|BLACKROOT ONLINE') { throw 'docs/index.html does not look like the playable build' }
       - name: Build Windows installer
         run: npx electron-builder --win nsis --x64 --publish never
-      - name: Install and validate Windows game
+      - name: Install and validate real BLACKROOT boot
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -63,21 +63,33 @@ jobs:
           $game = Join-Path $installDir 'BLACKROOT.exe'
           if (!(Test-Path $game)) { throw 'Installed executable is missing' }
 
-          $process = Start-Process -FilePath $game -PassThru
-          Start-Sleep -Seconds 20
-          if ($process.HasExited) { throw "BLACKROOT exited during launch validation with code $($process.ExitCode)" }
-          Stop-Process -Id $process.Id -Force
+          $report = Join-Path $env:TEMP 'blackroot-smoke.json'
+          if (Test-Path $report) { Remove-Item $report -Force }
+          $args = @('--smoke-test', "--smoke-report=$report")
+          $process = Start-Process -FilePath $game -ArgumentList $args -PassThru
+          if (-not $process.WaitForExit(300000)) {
+            try { Stop-Process -Id $process.Id -Force } catch {}
+            throw 'BLACKROOT smoke test timed out'
+          }
+          if (!(Test-Path $report)) { throw 'BLACKROOT did not write a smoke-test report' }
+          $smoke = Get-Content $report -Raw | ConvertFrom-Json
+          if ($process.ExitCode -ne 0) { throw "BLACKROOT smoke test exited with code $($process.ExitCode): $($smoke.errors -join '; ')" }
+          if (-not $smoke.passed) { throw "BLACKROOT smoke test reported failure: $($smoke.errors -join '; ')" }
+          if (-not $smoke.checks.boot) { throw 'BLACKROOT never initialized window.BLACKROOT' }
+          if (-not $smoke.checks.play) { throw 'BLACKROOT did not reach a playable rendered state' }
 
-          $report = @{
+          $releaseReport = @{
             passed = $true
             installer = (Split-Path $setup -Leaf)
             executable = 'BLACKROOT.exe'
             install = 'success'
-            launch = 'success'
+            boot = 'success'
+            gameplay = 'success'
             packagedHtmlBytes = (Get-Item 'docs/index.html').Length
             onlineServer = 'wss://blackroot-server-production.up.railway.app/net'
-          } | ConvertTo-Json
-          $report | Set-Content release/desktop-test-report.json
+            smoke = $smoke
+          } | ConvertTo-Json -Depth 8
+          $releaseReport | Set-Content release/desktop-test-report.json
 
           $uninstaller = Join-Path $installDir 'Uninstall BLACKROOT.exe'
           if (Test-Path $uninstaller) {
