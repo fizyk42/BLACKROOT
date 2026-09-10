@@ -1,0 +1,55 @@
+name: Build and publish web game
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'scripts/**'
+      - 'styles/**'
+      - 'build.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/web-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blackroot-web-build
+  cancel-in-progress: true
+
+jobs:
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build playable web version
+        run: npm run build
+
+      - name: Publish generated web build
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f docs/index.html docs/.nojekyll
+          if git diff --cached --quiet; then
+            echo "Web build already up to date."
+            exit 0
+          fi
+          git commit -m "Publish latest BLACKROOT Online web build"
+          git push
