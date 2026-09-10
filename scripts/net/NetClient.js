@@ -14,12 +14,10 @@ export const NetState = {
 const SEND_HZ = 12;
 const MAX_BACKOFF = 8;
 const MAX_ATTEMPTS = 10;
+const PUBLIC_SERVER = 'wss://blackroot-server-production.up.railway.app/net';
 
 export function defaultServer() {
-  if (typeof location === 'undefined') return 'ws://localhost:8787/net';
-  const secure = location.protocol === 'https:';
-  if (location.protocol.startsWith('http') && location.host) return `${secure ? 'wss' : 'ws'}://${location.host}/net`;
-  return 'ws://localhost:8787/net';
+  return PUBLIC_SERVER;
 }
 
 export class NetClient {
@@ -137,7 +135,7 @@ export class NetClient {
       return;
     }
     if (this.local || this._triedLocal) {
-      this._fail(this.local ? reason : `${reason} Co-op needs a server: run "npm run server" on any machine and put its address in.`);
+      this._fail(this.local ? reason : `${reason} Co-op needs a server.`);
       resolve(false); return;
     }
     this._triedLocal = true; this.local = true; this.error = '';
@@ -238,7 +236,8 @@ export class NetClient {
   _remoteShot(m) {
     const g = this.game; if (!g.fx || !g.scene) return;
     const p = this.players.get(m.id); const from = p ? p.muzzle(this._muzzle) : this._muzzle.set(m.p[0], m.p[1], m.p[2]);
-    this._hit.set(from.x + m.d[0] * 60, from.y + m.d[1] * 60, from.z + m.d[2] * 60); g.fx.tracer(from, this._hit, 0xffd2a0, 0.8); Audio.gunshot(m.w || 'ar', from);
+    this._hit.set(from.x + m.d[0] * 60, from.y + m.d[1] * 60, from.z + m.d[2] * 60);
+    g.fx.tracer(from, this._hit, 0xffd2a0, 0.8); Audio.gunshot(m.w || 'ar', from);
   }
   _remotePing(m) { if (!m.p) return; const who = this.roster.get(m.id)?.name || 'Someone'; this.game.waypoints?.addNetPing?.(m.p[0], m.p[1], m.p[2], m.v || who); this._emit('notice', `${who} marked a spot`, 'warn'); }
 
@@ -247,7 +246,7 @@ export class NetClient {
     if (this.state === NetState.RETRYING) { this._retryTimer -= dt; if (this._retryTimer <= 0) { this._intentional = false; this._dial(); } return; }
     if (!this.online) return;
     if (this.state === NetState.LOBBY && this.game.state === 'PLAYING') { this.state = NetState.PLAYING; this._emit('state', this.state); }
-    const g = this.game; const cam = g.camera?.position;
+    const g = this.game, cam = g.camera?.position;
     for (const p of this.players.values()) p.update(dt, this._clock, cam);
     this._sendAcc += dt; const step = 1 / SEND_HZ; if (this._sendAcc < step) return; this._sendAcc = 0; if (!g.player) return;
     const pl = g.player; let f = 0;
@@ -269,7 +268,7 @@ function normaliseUrl(raw) {
   if (!/^wss?:\/\//i.test(s)) {
     if (/^https:\/\//i.test(s)) s = s.replace(/^https:/i, 'wss:');
     else if (/^http:\/\//i.test(s)) s = s.replace(/^http:/i, 'ws:');
-    else s = (typeof location !== 'undefined' && location.protocol === 'https:' ? 'wss://' : 'ws://') + s;
+    else s = 'wss://' + s;
   }
   const u = s.replace(/\/+$/, ''); return /\/net$/.test(u) ? u : `${u}/net`;
 }
