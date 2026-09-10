@@ -37,8 +37,20 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
-      - name: Build game and Windows installer
-        run: npm run desktop:dist
+      - name: Build web bundle used by desktop app
+        run: npm run build
+      - name: Verify packaged game page is not empty
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (!(Test-Path 'docs/index.html')) { throw 'docs/index.html is missing after build' }
+          $size = (Get-Item 'docs/index.html').Length
+          if ($size -lt 100000) { throw "docs/index.html is unexpectedly small ($size bytes)" }
+          $html = Get-Content 'docs/index.html' -Raw
+          if ($html -notmatch 'BLACKROOT') { throw 'docs/index.html does not contain BLACKROOT game markup' }
+          if ($html -notmatch 'window.BLACKROOT|game-title|BLACKROOT ONLINE') { throw 'docs/index.html does not look like the playable build' }
+      - name: Build Windows installer
+        run: npx electron-builder --win nsis --x64 --publish never
       - name: Install and validate Windows game
         shell: pwsh
         run: |
@@ -62,6 +74,7 @@ jobs:
             executable = 'BLACKROOT.exe'
             install = 'success'
             launch = 'success'
+            packagedHtmlBytes = (Get-Item 'docs/index.html').Length
             onlineServer = 'wss://blackroot-server-production.up.railway.app/net'
           } | ConvertTo-Json
           $report | Set-Content release/desktop-test-report.json
