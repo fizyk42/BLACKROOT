@@ -1,5 +1,7 @@
 # Status
 
+**Publication update (2026-09-10, v0.3.1):** The Windows installer now builds, installs and renders the city in an automated GitHub Actions test. A vehicle geometry startup crash was fixed and all seven vehicle models are checked. The actual gameplay image is in `website/gameplay.jpg`; the test report is in `desktop/game-test-report.json`. The original assessment below is historical; its unimplemented-feature limitations still apply. Manual gameplay and performance testing remain outstanding.
+
 Last updated with the build in this repository.
 
 The single most important thing to know: **this was built on a machine with no GPU.**

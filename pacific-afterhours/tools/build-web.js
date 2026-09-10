@@ -10,4 +10,6 @@ cpSync(path.join(root, 'website'), out, { recursive: true });
 writeFileSync(path.join(out, '.nojekyll'), '');
 const index = path.join(out, 'play/index.html');
 writeFileSync(index, readFileSync(index, 'utf8').replace('<body>', '<body data-hosted="true">'));
-console.log('Built website and playable game in web/');
+rmSync(path.join(root, 'dist'), { recursive: true, force: true });
+cpSync(out, path.join(root, 'dist'), { recursive: true });
+console.log('Built website and playable game in web/ and dist/');

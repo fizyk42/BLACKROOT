@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "state": {
+    "running": true,
+    "mode": "freeroam",
+    "calls": 404,
+    "triangles": 356100,
+    "playtime": 0.2709000000000233,
+    "x": 460,
+    "z": 323.62,
+    "cash": "$25,000"
+  },
+  "errors": []
+}

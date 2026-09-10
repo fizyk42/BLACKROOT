@@ -1,5 +1,15 @@
 # Pacific Afterhours
 
+## Play and download
+
+- [Play in your browser / game website](https://pacific-afterhours.fizyk.chatgpt.site)
+- [Windows installer and release notes](https://github.com/fizyk42/BLACKROOT/releases/tag/pacific-afterhours-v0.3.1)
+
+The Windows installer includes the complete offline client, desktop and Start menu shortcuts, and an uninstaller. Run `npm run desktop:dist` to rebuild it on Windows, or `npm run build:web` to generate the website in `web/`.
+
+Version 0.3.1 fixes a vehicle geometry crash. All 81 original logic/network checks and construction checks for seven vehicle types pass. The installed game also passed an automated Windows render test; see `desktop/game-test-report.json`. This is an early playable alpha with three story missions. Public multiplayer hosting is not included; Online accepts a compatible shared WebSocket server address.
+
+
 An original third-person open-world sandbox game set in **San Aurelio**, a fictional
 Southern Californian coastal city. Drive, walk, work, race, get chased, buy property.
 
