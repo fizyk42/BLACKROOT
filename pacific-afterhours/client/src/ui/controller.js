@@ -37,7 +37,7 @@ export class ControllerUI {
   back() {
     if (input._capture) { input.cancelCapture(); return; }
     if (this.game.shop.open) this.game.shop.close();
-    else if (this.game.overlay.open) { this.game.overlay.hide(); this.game.paused = false; }
+    else if (this.game.overlay.open) { this.game.overlay.hide(); this.game.paused = false; input.requestLock(); }
     else this.moveTo(document.querySelector('#mainmenu [aria-current="true"]'));
   }
   adjust(el, direction) {
@@ -76,6 +76,16 @@ export class ControllerUI {
     if (root !== this.root) { this.focus?.classList.remove('pad-focus'); this.root = root; this.focus = null; this.index=0; this.direction=''; }
     if (input.lastDevice !== 'pad') this.focus?.classList.remove('pad-focus');
     if (input.pressed('pause') || input.gamepad.pressed.has(1)) { this.back(); return true; }
+    if (root.id === 'overlay' && input.lastDevice === 'kbm') {
+      for (const [action, tab] of [['map','map'],['journal','journal'],['phone','stats']]) {
+        if (input.pressed(action)) {
+          this.game.overlay.toggle(tab);
+          this.game.paused = this.game.overlay.open;
+          if (!this.game.paused) input.requestLock();
+          return true;
+        }
+      }
+    }
     if (!input.pad || input.lastDevice !== 'pad') return true;
     const controls = this.controls();
     if (!controls.length) return true;

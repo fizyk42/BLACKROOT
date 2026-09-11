@@ -10,6 +10,7 @@
   const check = (value,label) => {if(!value)throw new Error('Controller smoke: '+label);};
   try {
     Object.defineProperty(navigator,'getGamepads',{configurable:true,value:()=>pads});
+    input.focused = true;
     tick();press(13);
     check(ui.focus?.dataset.act==='freeroam','D-pad chooses Free Roam');
     press(0);check(ui.focus?.textContent==='Start free roam','Cross enters selected menu');
