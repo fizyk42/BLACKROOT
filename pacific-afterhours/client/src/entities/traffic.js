@@ -56,7 +56,7 @@ export class TrafficCar {
     const dx = ahead.x - v.pos.x, dz = ahead.z - v.pos.z;
     const desired = Math.atan2(dx, dz);
     const err = angleDiff(v.yaw, desired);
-    const steer = clamp(err * 2.4, -1, 1);
+    const steer = clamp(-err * 2.4, -1, 1);
 
     // Reasons to slow down: red light ahead, car in front, sharp turn.
     let target = this.targetSpeed;
@@ -180,7 +180,7 @@ export class TrafficSystem {
       if (!clear) continue;
       const type = CIVILIAN_TYPES[Math.floor(Math.random() * CIVILIAN_TYPES.length)];
       const v = new Vehicle(type, { x, z });
-      v.yaw = alongX ? (side > 0 ? Math.PI : 0) : (side > 0 ? -Math.PI / 2 : Math.PI / 2);
+      v.yaw = alongX ? (side > 0 ? Math.PI / 2 : -Math.PI / 2) : (side > 0 ? Math.PI : 0);
       v.attach(this.scene);
       v.parked = true;
       this.parked.push(v);
@@ -217,6 +217,13 @@ export class TrafficSystem {
 
     for (const c of this.cars) c.update(dt, clock, colliders, all, playerPos);
     for (const v of this.parked) { v.syncMesh(dt); }
+  }
+
+  takeVehicle(vehicle) {
+    const parked = this.parked.indexOf(vehicle);
+    if (parked >= 0) this.parked.splice(parked, 1);
+    const moving = this.cars.findIndex(car => car.vehicle === vehicle);
+    if (moving >= 0) this.cars.splice(moving, 1);
   }
 
   clear() {

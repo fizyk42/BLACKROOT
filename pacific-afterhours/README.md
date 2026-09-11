@@ -1,13 +1,17 @@
 # Pacific Afterhours
 
-## Controller update — 0.3.2
+## Driving and control fixes — 0.3.3
+
+Fixes reversed walking/steering, sideways car models, wheel alignment, parked headings, vehicles spawning inside buildings, and losing track of taken parked cars. Cars now spawn on clear nearby roads, including when loading an existing save. The driving camera respects manual look input. Regression checks exercise movement, steering, braking, reverse, road placement and AI lane correction across all seven vehicle types. The Windows release also runs an installed keyboard/virtual-controller driving check.
+
+## Controller support
 
 PS5 DualSense, PS4 DualShock 4 and Xbox controllers now support gameplay, menus, shops, settings and map destination selection. Connect by USB/Bluetooth and press a button. D-pad/left stick navigates; Cross/A selects; Circle/B goes back; shoulder buttons change tabs. See `docs/CONTROLS.md` for the action map. Text entry and keyboard rebinding use a keyboard. Input checks use virtual controllers; physical hardware testing is still outstanding.
 
 ## Play and download
 
 - [Play in your browser / game website](https://pacific-afterhours.fizyk.chatgpt.site)
-- [Windows installer and release notes](https://github.com/fizyk42/BLACKROOT/releases/tag/pacific-afterhours-v0.3.2)
+- [Windows installer and release notes](https://github.com/fizyk42/BLACKROOT/releases/tag/pacific-afterhours-v0.3.3)
 
 The Windows installer includes the complete offline client, desktop and Start menu shortcuts, and an uninstaller. Run `npm run desktop:dist` to rebuild it on Windows, or `npm run build:web` to generate the website in `web/`.
 

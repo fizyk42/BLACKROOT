@@ -12,7 +12,7 @@ const fill = document.getElementById('loadfill');
 const msg = document.getElementById('loadmsg');
 const menuEl = document.getElementById('menu');
 
-const BUILD = '0.3.2';
+const BUILD = '0.3.3';
 document.getElementById('buildver').textContent = BUILD;
 
 function setProgress(p, text) {

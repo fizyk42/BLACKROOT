@@ -133,6 +133,9 @@ export class Player {
     v.driver = 'player';
     v.engineOn = true;
     v.parked = false;
+    this.camYaw = v.yaw;
+    this.camPitch = 0.13;
+    this.aiming = false;
     this.character.play('drive', 0.2);
     this.enterCooldown = 0.5;
     if (this.onEnterVehicle) this.onEnterVehicle(v);
@@ -184,6 +187,8 @@ export class Player {
 
   updateCameraInput(dt, input) {
     const speed = 1;
+    const looking = Math.abs(input.axes.lookX) + Math.abs(input.axes.lookY) > 0.0001;
+    this.cameraLookTimer = looking ? 1.2 : Math.max(0, (this.cameraLookTimer || 0) - dt);
     this.camYaw -= input.axes.lookX * speed;
     this.camPitch = clamp(this.camPitch + input.axes.lookY * speed, -0.65, 1.15);
     if (input.mouse.wheel) {
@@ -211,7 +216,8 @@ export class Player {
     // Movement is camera-relative.
     const cy = this.camYaw;
     const fx = Math.sin(cy), fz = Math.cos(cy);
-    const rx = Math.cos(cy), rz = -Math.sin(cy);
+    // Camera looks along +Z at yaw zero: screen-right is -X.
+    const rx = -Math.cos(cy), rz = Math.sin(cy);
     let wx = fx * az + rx * ax;
     let wz = fz * az + rz * ax;
     const l = Math.hypot(wx, wz);
@@ -318,9 +324,9 @@ export class Player {
     const seatX = -s.length * 0.06, seatY = s.height * 0.30, seatZ = -s.width * 0.24;
     const c = Math.cos(v.yaw), sn = Math.sin(v.yaw);
     this.pos.set(
-      v.pos.x + seatX * sn + seatZ * c,
+      v.pos.x - seatX * sn + seatZ * c,
       seatY,
-      v.pos.z + seatX * c - seatZ * sn,
+      v.pos.z - seatX * c - seatZ * sn,
     );
     this.yaw = v.yaw;
     this.character.setPosition(this.pos.x, this.pos.y - 0.52, this.pos.z);
@@ -449,7 +455,7 @@ export class Player {
     const m = modes[this.camMode % modes.length];
 
     // While driving, the camera drifts behind the car unless the player looks around.
-    if (inCar && Math.abs(this.vehicle.speed) > 3) {
+    if (inCar && Math.abs(this.vehicle.speed) > 3 && !(this.cameraLookTimer > 0)) {
       const behind = this.vehicle.yaw;
       this.camYaw = dampAngle(this.camYaw, behind, 2.2 * clamp(Math.abs(this.vehicle.speed) / 14, 0, 1), dt);
       this.camPitch = damp(this.camPitch, 0.13, 2.0, dt);

@@ -263,8 +263,8 @@ function vehicleGeometry(s) {
     head: mergeGeometries(headParts, false),
     tail: mergeGeometries(tailParts, false),
     glass: gh.glass,
-    tyre: wheelGeo(wr, ww).tyre,
-    rim: rimGeo(wr, ww),
+    tyre: wheelGeo(wr, ww).tyre.rotateY(Math.PI / 2),
+    rim: rimGeo(wr, ww).rotateY(Math.PI / 2),
   };
   _sharedGeoCache.set(s.id, out);
   return out;
@@ -279,8 +279,13 @@ function sharedMat(key, make) {
 export function buildVehicleMesh(spec, colourHex) {
   const g = vehicleGeometry(spec);
   const grp = new THREE.Group();
+  // Body geometry is authored nose=-X, axle=Z. Physics and characters use
+  // forward=+Z. Convert the complete model once, below the world-yaw group.
+  const model = new THREE.Group();
+  model.rotation.y = Math.PI / 2;
+  grp.add(model);
   const chassis = new THREE.Group();  // everything that leans on the suspension
-  grp.add(chassis);
+  model.add(chassis);
 
   const paint = new THREE.MeshStandardMaterial({
     color: spec.fixedPaint ?? colourHex, roughness: 0.28, metalness: 0.55,
@@ -465,13 +470,17 @@ export class Vehicle {
     accel -= this.speed * 0.55;
     if (this.handbrake) accel -= Math.sign(this.speed) * brakeF * 0.6;
 
+    const previousSpeed = this.speed;
     this.speed += accel * dt;
+    // Friction can stop a car, but must not propel it in the other direction.
+    if (throttle === 0 && brake === 0 && previousSpeed * this.speed < 0) this.speed = 0;
     if (Math.abs(this.speed) < 0.06 && throttle < 0.05) this.speed = 0;
     this.speed = clamp(this.speed, -topSpeed * 0.35, topSpeed);
 
     // Yaw from steering.
     const wb = s.wheelbase;
-    let yawRate = (this.speed / wb) * Math.tan(this.steerAngle);
+    // Positive control means right. In the +Z-forward frame that reduces yaw.
+    let yawRate = -(this.speed / wb) * Math.tan(this.steerAngle);
     // Drifting: handbrake or too much speed for the grip available.
     const latLoad = Math.abs(yawRate * this.speed);
     const gripLimit = grip * (this.handbrake ? 0.32 : 1) * (1 - this._wet * 0.28);
@@ -578,8 +587,8 @@ export class Vehicle {
     if (!this._bodyGeo) return;
     const attr = this._bodyGeo.attributes.position;
     const arr = attr.array;
-    // Impact point in local space.
-    const c = Math.cos(-this.yaw), s = Math.sin(-this.yaw);
+    // Invert the same model-to-world rotation used by the visible body.
+    const a = this.yaw + Math.PI / 2, c = Math.cos(a), s = Math.sin(a);
     const lx = dirX * c - dirZ * s;
     const lz = dirX * s + dirZ * c;
     const px = lx * this.spec.length * 0.5;
@@ -614,12 +623,12 @@ export class Vehicle {
     m.position.set(this.pos.x, 0, this.pos.z);
     m.rotation.y = this.yaw;
     const u = m.userData;
-    u.chassis.rotation.z = this.bodyRoll;
-    u.chassis.rotation.x = this.bodyPitch;
+    u.chassis.rotation.x = -this.bodyRoll;
+    u.chassis.rotation.z = this.bodyPitch;
     u.chassis.position.y = this.spec.lowered ? -0.02 : 0;
     for (const w of u.wheels) {
-      w.rotation.x = this.wheelSpin;
-      w.rotation.y = w.userData.steered ? this.steerAngle : 0;
+      w.rotation.z = this.wheelSpin;
+      w.rotation.y = w.userData.steered ? -this.steerAngle : 0;
     }
     u.headMat.emissiveIntensity = this.headlights ? 2.6 : 0;
     u.tailMat.emissiveIntensity = this.headlights ? 0.9 + this.brakeLight * 2.4 : this.brakeLight * 2.6;

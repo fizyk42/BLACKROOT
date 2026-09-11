@@ -174,7 +174,7 @@ export class PoliceSystem {
       const dx = aimX - v.pos.x, dz = aimZ - v.pos.z;
       const desired = Math.atan2(dx, dz);
       const err = angleDiff(v.yaw, desired);
-      const steer = clamp(err * 2.6, -1, 1);
+      const steer = clamp(-err * 2.6, -1, 1);
 
       // Speed: full chase when close, cruise while searching.
       let target = this.state === 'pursuit' ? 20 + this.level * 3.5 : 11;

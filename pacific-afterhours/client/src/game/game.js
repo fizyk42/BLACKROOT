@@ -22,6 +22,7 @@ import { writeSave, readSave, storageAvailable } from '../core/save.js';
 import { loadCharacterAsset, OUTFITS } from '../entities/character.js';
 import { clamp, damp, fmtMoney } from '../core/util.js';
 import { poi, POIS, isOnRoad, CITY } from '../world/citymap.js';
+import { findRoadSpawn } from '../world/vehicle-spawn.js';
 
 export class Game {
   constructor(canvas) {
@@ -110,6 +111,10 @@ export class Game {
       if (!this.economy.ownsVehicle(v.id) && !v.missionVehicle) {
         this.police.reportCrime('stealCar', this.player.pos);
       }
+      // Transfer traffic ownership without detaching the visible car. Keep it
+      // in the world after exit so it remains enterable and collidable.
+      this.traffic.takeVehicle(v);
+      if (!this.ownedVehicles.includes(v) && !this.missionVehicles.includes(v)) this.missionVehicles.push(v);
     };
   }
 
@@ -206,7 +211,9 @@ export class Game {
       : new Set();
     this.ownedOutfits = new Set(['homecoming']);
     this.player.restore(null);
-    this.player.teleport(shop.doorX ?? shop.x, 0.16, (shop.doorZ ?? shop.z) + 6, Math.PI);
+    const facing = shop.ry || 0;
+    this.player.teleport((shop.doorX ?? shop.x) + Math.sin(facing) * 2,
+      0.16, (shop.doorZ ?? shop.z) + Math.cos(facing) * 2, facing);
     this.player.health = 100;
     this.sky.setTime(mode === 'freeroam' ? 13 : 8.5);
     this.clearWorldVehicles();
@@ -226,7 +233,7 @@ export class Game {
     const shop = poi('vega_shop');
     const v = new Vehicle(specId, {
       colour, owned: true,
-      x: (shop.doorX ?? shop.x) + 5, z: (shop.doorZ ?? shop.z) + 5,
+      ...this.roadSpawn(specId, shop.doorX ?? shop.x, shop.doorZ ?? shop.z),
     });
     v.attach(this.scene);
     this.ownedVehicles.push(v);
@@ -261,6 +268,11 @@ export class Game {
   }
 
   // ---------------------------------------------------------------- helpers
+  roadSpawn(specId, x, z) {
+    return findRoadSpawn(this.world.graph, VEHICLES[specId] || VEHICLES.sedan,
+      x, z, this.world.colliders, this.allVehicles());
+  }
+
   allVehicles() {
     const out = this.traffic.vehicles.concat(this.traffic.parked, this.ownedVehicles, this.missionVehicles);
     for (const u of this.police.units) out.push(u.vehicle);
@@ -288,11 +300,9 @@ export class Game {
 
   spawnMissionVehicle(step) {
     const p = poi(step.near || 'vega_shop');
-    const angle = Math.random() * Math.PI * 2;
     const v = new Vehicle(step.spec, {
       colour: step.colour ?? PAINTS[0].hex,
-      x: (p.doorX ?? p.x) + Math.cos(angle) * 7,
-      z: (p.doorZ ?? p.z) + Math.sin(angle) * 7,
+      ...this.roadSpawn(step.spec, p.doorX ?? p.x, p.doorZ ?? p.z),
     });
     v.missionVehicle = true;
     v.attach(this.scene);
@@ -386,11 +396,12 @@ export class Game {
     if (this.economy.vehicleList.length >= this.economy.garageCapacity()) {
       return { ok: false, message: 'No garage space. Buy property or sell something.' };
     }
+    const dealer = poi('dealer');
+    const spawn = this.roadSpawn(specId, dealer.doorX ?? dealer.x, dealer.doorZ ?? dealer.z);
     const r = this.economy.spend(spec.price, 'vehicle');
     if (!r.ok) return { ok: false, message: 'Not enough money.' };
-    const dealer = poi('dealer');
     const v = new Vehicle(specId, {
-      owned: true, x: (dealer.doorX ?? dealer.x) + 6, z: (dealer.doorZ ?? dealer.z) + 4,
+      owned: true, ...spawn,
     });
     v.attach(this.scene);
     this.ownedVehicles.push(v);
@@ -398,7 +409,7 @@ export class Game {
     if (this.mode === 'online' && this.net.connected) {
       this.net.buyVehicle(v.id, specId, v.colour, spec.price);
     }
-    this.hud.toast(`${spec.name} purchased. It is out front.`, 'good');
+    this.hud.toast(`${spec.name} purchased. It is parked on the nearby road.`, 'good');
     return { ok: true, vehicle: v };
   }
 
@@ -423,9 +434,7 @@ export class Game {
     if (this.ownedVehicles.some((v) => v.id === id)) return { ok: false, message: 'Already out.' };
     const p = this.player.pos;
     const v = Vehicle.deserialise(Object.assign({}, data, {
-      x: p.x + Math.sin(this.player.yaw) * 7,
-      z: p.z + Math.cos(this.player.yaw) * 7,
-      yaw: this.player.yaw,
+      ...this.roadSpawn(data.spec, p.x, p.z),
     }));
     v.attach(this.scene);
     this.ownedVehicles.push(v);
@@ -505,7 +514,7 @@ export class Game {
     const first = this.economy.vehicleList[0];
     if (first) {
       const v = Vehicle.deserialise(Object.assign({}, first, {
-        x: this.player.pos.x + 6, z: this.player.pos.z + 3, yaw: this.player.yaw,
+        ...this.roadSpawn(first.spec, this.player.pos.x, this.player.pos.z),
       }));
       v.attach(this.scene);
       this.ownedVehicles.push(v);
