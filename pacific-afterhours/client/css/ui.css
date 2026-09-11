@@ -211,3 +211,8 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   #minimap{height:150px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+/* Controller focus stays visible while navigating menus and shops. */
+.pad-focus{outline:3px solid var(--foam)!important;outline-offset:3px;background-color:#173b40!important;color:#fff!important}
+#controller-status{position:fixed;bottom:8px;left:4%;right:4%;z-index:60;margin:0;padding:10px 14px;background:#071016f2;border:1px solid var(--hairline);color:var(--concrete);font-size:14px;line-height:1.4;pointer-events:none}
+#controller-status[hidden]{display:none}.controller-guide{margin-bottom:24px}.controller-guide p{line-height:1.5}.pad-bindings{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px 16px;font-size:14px}.pad-bindings b{color:var(--foam)}.menu-grid{padding-bottom:70px}#overlay,#shop{padding-bottom:75px}

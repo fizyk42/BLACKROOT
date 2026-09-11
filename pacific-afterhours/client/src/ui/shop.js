@@ -166,7 +166,7 @@ export class ShopUI {
     // Paint.
     const price = tuning ? 450 : 700;
     const swatches = PAINTS.map((p) =>
-      `<div class="swatch" data-hex="${p.hex}" title="${p.name}" style="background:#${p.hex.toString(16).padStart(6, '0')}" ${v.colour === p.hex ? 'aria-current="true"' : ''}></div>`).join('');
+      `<div role="button" tabindex="0" class="swatch" data-hex="${p.hex}" title="${p.name}" aria-label="${p.name}" style="background:#${p.hex.toString(16).padStart(6, '0')}" ${v.colour === p.hex ? 'aria-current="true"' : ''}></div>`).join('');
     const card = this.card({
       title: 'Respray',
       desc: 'Pick a colour. Changing the paint also clears any police description of the car.',
@@ -243,7 +243,7 @@ export class ShopUI {
       });
     }
     const swatches = SKIN_TONES.map((h, i) =>
-      `<div class="swatch" data-hex="${h}" style="background:#${h.toString(16).padStart(6, '0')}"></div>`).join('');
+      `<div role="button" tabindex="0" class="swatch" data-hex="${h}" aria-label="Skin tone ${i + 1}" style="background:#${h.toString(16).padStart(6, '0')}"></div>`).join('');
     const card = this.card({
       title: 'Appearance',
       desc: 'Adjust skin tone.',

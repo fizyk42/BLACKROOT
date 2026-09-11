@@ -2,6 +2,7 @@
 
 import { CITY, POIS, DISTRICTS, districtAt } from '../world/citymap.js';
 import { settings, saveSettings, PRESETS, DIFFICULTY } from '../core/settings.js';
+import { controllerGuide } from './controller.js';
 import { input, ACTIONS } from '../core/input.js';
 import { listSaves, deleteSave } from '../core/save.js';
 import { fmtMoney, fmtClock } from '../core/util.js';
@@ -153,6 +154,14 @@ export class Overlay {
     c.beginPath(); c.arc(px, py, 5, 0, Math.PI * 2); c.fill();
     c.strokeStyle = '#071016'; c.lineWidth = 1.5; c.stroke();
 
+    const destinations = document.createElement('div');
+    destinations.className = 'row';
+    destinations.innerHTML = `<label for="pad-destination">Map destination</label><select id="pad-destination">${POIS.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select><button class="cta">Set waypoint</button><button class="cta ghost">Clear waypoint</button>`;
+    const buttons = destinations.querySelectorAll('button');
+    buttons[0].addEventListener('click', () => { const p = POIS.find(p => p.id === destinations.querySelector('select').value); if(p) g.setWaypoint({x:p.x,z:p.z}); this.render(); });
+    buttons[1].addEventListener('click', () => { g.setWaypoint(null); this.render(); });
+    wrap.appendChild(destinations);
+
     canvas.addEventListener('click', (e) => {
       const r = canvas.getBoundingClientRect();
       const mx = (e.clientX - r.left) * (canvas.width / r.width);
@@ -299,7 +308,7 @@ export class Overlay {
   // ---------------------------------------------------------------- controls
   renderControls() {
     const wrap = document.createElement('div');
-    wrap.innerHTML = '<h3>Controls</h3><p>Click a binding to change it. Press Escape while listening to cancel. Controllers use the standard layout and are detected automatically.</p>';
+    wrap.innerHTML = '<h3>Controls</h3>' + controllerGuide() + '<h4>Keyboard & mouse</h4><p>Click a binding to change it. Escape or ○ / B cancels.</p>';
     this.bodyEl.appendChild(wrap);
 
     for (const [action, def] of Object.entries(ACTIONS)) {

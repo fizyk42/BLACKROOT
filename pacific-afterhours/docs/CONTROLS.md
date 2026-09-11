@@ -11,11 +11,11 @@ new key, and it saves immediately. Press Escape while it is listening to cancel.
 | Look | Mouse | Right stick |
 | Sprint | `Shift` (hold) | Left stick click |
 | Jump | `Space` | A / Cross |
-| Crouch | `Ctrl` or `C` | X / Square |
+| Crouch | `Ctrl` or `C` | Right stick click / R3 |
 | Interact, enter vehicle | `E` | Y / Triangle |
 | Aim | Right mouse button | Left trigger |
 | Fire / melee | Left mouse button | Right trigger |
-| Reload | `R` | — |
+| Reload | `R` | X / Square |
 | Next weapon | `Q` | LB / L1 |
 | Holster | `X` | B / Circle |
 | Change camera | `V` | D-pad down |
@@ -29,9 +29,9 @@ new key, and it saves immediately. Press Escape while it is listening to cancel.
 | Brake / reverse | `S` | Left trigger (analogue) |
 | Steer | `A` `D` | Left stick |
 | Handbrake | `Space` | A / Cross |
-| Horn | `H` | — |
-| Headlights | `L` | — |
-| Recover a stuck vehicle | Hold `U` | — |
+| Horn | `H` | Left stick click / L3 |
+| Headlights | `L` | X / Square |
+| Recover a stuck vehicle | Hold `U` | Hold LB / L1 |
 | Get out | `E` | Y / Triangle |
 | Change camera | `V` | D-pad down |
 
@@ -59,3 +59,16 @@ that is connected. You can force one in **Pause → Settings → Controller glyp
 - Stick deadzone, mouse sensitivity, controller sensitivity and vertical inversion are
   all in **Pause → Settings**.
 - Hold-to-sprint can be switched to toggle-to-sprint in the accessibility section.
+
+## Controller menus and connection
+
+Supports the standard Gamepad API mapping for PS5 DualSense, PS4 DualShock 4 and Xbox controllers. Connect using USB or your operating system’s Bluetooth pairing, open the game, and press a button. A controller held during connection must be released before it can activate a menu. Use a current browser that reports the standard mapping; raw/unmapped controllers are not interpreted as standard pads.
+
+- D-pad or left stick: move focus; left/right changes selected sliders and lists.
+- Cross / A: select; Circle / B: back; Options / Menu: resume from pause.
+- L1/R1 or LB/RB: switch menu categories and pause tabs.
+- Right stick: scroll long lists.
+- Map destination list: choose a location and select Set waypoint.
+- Text fields and keyboard rebinding: use a keyboard; Circle / B cancels a rebind.
+
+Unplugging the active controller while playing pauses the game. Reconnect, press a button and resume. PlayStation/Xbox button labels are automatic, with a manual choice in Settings. Adaptive triggers and advanced DualSense haptics are not implemented. Input and menu flows are tested with virtual gamepads; USB/Bluetooth transport and physical hardware have not been tested here.

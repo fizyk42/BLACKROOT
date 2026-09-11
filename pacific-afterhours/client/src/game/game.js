@@ -599,22 +599,23 @@ export class Game {
 
   step(dt) {
     const t0 = performance.now();
-    input.update();
+    input.update(dt, this.player.vehicle ? 'vehicle' : 'foot');
+    const menuInput = this.controllerUI?.update(dt) || false;
 
     // Global keys work even while paused.
-    if (input.pressed('pause')) {
+    if (!menuInput && input.pressed('pause')) {
       if (this.shop.open) this.shop.close();
       else if (this.overlay.open) { this.overlay.hide(); this.paused = false; input.requestLock(); }
       else { this.overlay.show('map'); this.paused = true; input.releaseLock(); }
       audio.ui('cancel');
     }
-    if (!this.shop.open) {
+    if (!menuInput && !this.shop.open) {
       if (input.pressed('map')) { this.overlay.toggle('map'); this.paused = this.overlay.open; this.paused ? input.releaseLock() : input.requestLock(); }
       if (input.pressed('journal')) { this.overlay.toggle('journal'); this.paused = this.overlay.open; this.paused ? input.releaseLock() : input.requestLock(); }
       if (input.pressed('phone')) { this.overlay.toggle('stats'); this.paused = this.overlay.open; this.paused ? input.releaseLock() : input.requestLock(); }
     }
 
-    if (!this.paused) this.simulate(dt);
+    if (!this.paused && !menuInput) this.simulate(dt);
 
     this.net.update(dt);
     this.hud.update(dt, this);

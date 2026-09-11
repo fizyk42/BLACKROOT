@@ -4,6 +4,7 @@ import { Game } from './game/game.js';
 import { Menu } from './ui/menu.js';
 import { loadSettings, settings } from './core/settings.js';
 import { audio } from './core/audio.js';
+import { ControllerUI } from './ui/controller.js';
 import { input } from './core/input.js';
 
 const boot = document.getElementById('boot');
@@ -11,7 +12,7 @@ const fill = document.getElementById('loadfill');
 const msg = document.getElementById('loadmsg');
 const menuEl = document.getElementById('menu');
 
-const BUILD = '0.3.1';
+const BUILD = '0.3.2';
 document.getElementById('buildver').textContent = BUILD;
 
 function setProgress(p, text) {
@@ -62,6 +63,19 @@ async function main() {
   };
 
   const menu = new Menu(game);
+  game.controllerUI = new ControllerUI(game);
+  let menuFrameTime = performance.now();
+  const pollMenu = now => {
+    const dt = Math.min(.05, (now - menuFrameTime) / 1000);
+    menuFrameTime = now;
+    if (!game.running) {
+      input.update(dt);
+      game.controllerUI.update(dt);
+      input.endFrame();
+    }
+    requestAnimationFrame(pollMenu);
+  };
+  requestAnimationFrame(pollMenu);
   window.__game = game;   // handy for debugging from the console
 
   boot.classList.add('hidden');

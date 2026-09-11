@@ -52,7 +52,9 @@ app.whenReady().then(async () => {
         if (Date.now() > deadline) throw new Error('Game boot timeout');
         await new Promise(r => setTimeout(r, 500));
       }
-      const startError = await win.webContents.executeJavaScript("(() => { try { window.__game.startGame('freeroam'); return null; } catch(e) { return e.stack; } })()", true);
+      const controllerReport = await win.webContents.executeJavaScript(fs.readFileSync(path.join(__dirname, 'controller-smoke.js'), 'utf8'), true);
+      if (!controllerReport.passed) throw new Error(controllerReport.error);
+      const startError = await win.webContents.executeJavaScript("(() => { try { if (!window.__game.running) window.__game.startGame('freeroam'); return null; } catch(e) { return e.stack; } })()", true);
       if (startError) throw new Error(startError);
       await new Promise(r => setTimeout(r, 6000));
       const state = await win.webContents.executeJavaScript(`({running: __game.running, mode: __game.mode,
@@ -63,7 +65,7 @@ app.whenReady().then(async () => {
         throw new Error('Game did not render a playable world: ' + JSON.stringify(state));
       const screenshotPath = arg('--screenshot');
       if (screenshotPath) fs.writeFileSync(screenshotPath, (await win.webContents.capturePage()).toJPEG(90));
-      if (reportPath) fs.writeFileSync(reportPath, JSON.stringify({ passed: true, state, errors }, null, 2));
+      if (reportPath) fs.writeFileSync(reportPath, JSON.stringify({ passed: true, state, controllerReport, errors }, null, 2));
       app.exit(0);
     } catch (error) {
       if (reportPath) fs.writeFileSync(reportPath, JSON.stringify({ passed: false, error: String(error), errors }, null, 2));
