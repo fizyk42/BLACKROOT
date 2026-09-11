@@ -3,12 +3,29 @@
   "state": {
     "running": true,
     "mode": "freeroam",
-    "calls": 404,
-    "triangles": 356100,
-    "playtime": 0.2709000000000233,
+    "calls": 225,
+    "triangles": 280098,
+    "playtime": 0.5411999999999825,
     "x": 460,
     "z": 323.62,
     "cash": "$25,000"
+  },
+  "controllerReport": {
+    "passed": true,
+    "virtualControllers": [
+      "DualSense",
+      "Xbox"
+    ],
+    "checks": [
+      "menu navigation",
+      "settings adjustment",
+      "game start",
+      "no confirm leakage",
+      "back",
+      "disconnect pause",
+      "reconnect resume"
+    ],
+    "physicalHardwareTested": false
   },
   "errors": []
 }
